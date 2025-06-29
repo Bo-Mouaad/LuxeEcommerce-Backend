@@ -9,9 +9,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import MainApp.Entities.User;
 import MainApp.Enums.Role;
 import MainApp.Repositories.UserRepository;
@@ -54,13 +51,14 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 		
 		ResponseCookie refreshToken = ResponseCookie.from("refreshToken", refToken)
 			    .httpOnly(true) 
+			    .sameSite("Strict")
 			    .path("/")
 			    .maxAge(Duration.ofDays(15))
 			    .build();
 
 			response.addHeader(HttpHeaders.SET_COOKIE, refreshToken.toString());
 		
-		if(userRepo.findByEmail(email) != null) {
+		if(userRepo.findByEmail(email).isPresent()) {
 		response.sendRedirect("http://localhost:3000/auth/callback/?token="+accessToken);
 		return;
 		}	

@@ -25,17 +25,17 @@ import lombok.NoArgsConstructor;
 public class Payment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)  // Requires Hibernate 6+ for UUID generation, else use manual UUID
+    @GeneratedValue(strategy = GenerationType.UUID)  
     private String id;
 
     @Column(name = "payment_intent_id", nullable = false, unique = true)
     private String PaymentIntentId;
 
     @Column(nullable = false)
-    private long amount; // in cents
+    private long amount;
 
     @Column(nullable = false, length = 3)
-    private String currency; // e.g., "usd"
+    private String currency; 
     
 
     @Column(nullable = false)

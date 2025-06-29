@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
+@Builder
 
 public class Order {
 	 @Id
@@ -37,6 +39,7 @@ public class Order {
 	    private Long amount; 
 
 	    @Column(nullable = false)
+	    @Builder.Default
 	    private String currency = "usd";
 
 	    @Enumerated(EnumType.STRING)

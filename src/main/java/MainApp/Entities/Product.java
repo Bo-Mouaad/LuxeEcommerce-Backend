@@ -16,14 +16,20 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name = "Product")  
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
+@Builder
+
+
 public class Product {
     
     @Id
@@ -45,22 +51,28 @@ public class Product {
    private String imageUrl;
 
     @Column(name = "is_featured", nullable = false)
+    @Builder.Default
     private boolean isFeatured = false;
 
 
     @Column(nullable = true)
+    @Builder.Default
     private double rating = 0.0;
     
     @Column(name = "review_count", nullable = true)
+    @Builder.Default
     private Integer reviewCount = 0;
     
     @Column(name = "is_new", nullable = true)
+    @Builder.Default
     private boolean isNew = false;
 
     @Column(name = "in_stock", nullable = true)
+    @Builder.Default
     private boolean inStock = true;
 
     @Column(name = "created_at")
+    @Builder.Default
     private LocalDate createdAt = LocalDate.now();
 
     @ManyToOne
@@ -73,12 +85,15 @@ public class Product {
     private ProductDetails details;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<ProductFeatures> features = new ArrayList<>();
-
+    
+    @Builder.Default
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductImages> images = new ArrayList<>();
     
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Cart> cartItems = new ArrayList<>();
 
 }

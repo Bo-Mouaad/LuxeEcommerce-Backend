@@ -72,7 +72,7 @@ public class CartService {
 	}
 	
 	@Transactional
-	public void deleteFromCartHandler(Long productId, Authentication authentication) {
+	public void deleteFromCartHandler(long productId, Authentication authentication) {
 		String email = extractEmail(authentication);
 		if (email == null) {
 			throw new RuntimeException("User email not found in authentication");

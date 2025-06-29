@@ -6,8 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import MainApp.Entities.User;
+import MainApp.Enums.Role;
 import MainApp.Repositories.UserRepository;
 import io.jsonwebtoken.JwtException;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -16,12 +18,16 @@ import lombok.AllArgsConstructor;
 public class AuthService {
 	
 	private final AuthenticationManager authenticationManager;
-	private final UserRepository userRepo; 
+	private final UserRepository userRepository; 
 	private final PasswordEncoder passwordEncoder;
 	private final JWTService jwtService;
 	
 
-
+	@PostConstruct
+	  public void setAdmin(){
+		userRepository.save(User.builder().username("MouaadHr").email("admin@gmail.com").UserRole(Role.ADMIN).password(passwordEncoder.encode("admin")).build());
+	  }
+		
 	public String verifyLogin(User user) {
 		Authentication auth = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
@@ -43,7 +49,7 @@ public class AuthService {
 	public boolean registerUser(User user) {
 		try {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			userRepo.save(user);
+			userRepository.save(user);
 			return true; 
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -56,7 +62,7 @@ public class AuthService {
 		return jwtService.isTokenExpired(token);
 	}
 	public User getUser(String email) {
-		return userRepo.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(""));
+		return userRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(""));
 	}
 
 }

@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,6 +32,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 @Entity
+@Builder
 @Table(name="Users")
 
 public class  User {
@@ -64,6 +66,7 @@ public class  User {
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
+	@Builder.Default
 	private List<Cart> cartItems = new ArrayList<>();
 
     

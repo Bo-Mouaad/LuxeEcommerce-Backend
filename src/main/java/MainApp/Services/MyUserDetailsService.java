@@ -7,25 +7,22 @@ import org.springframework.stereotype.Service;
 import MainApp.Entities.User;
 import MainApp.Entities.UserPrincipals;
 import MainApp.Repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
+
 
 public class MyUserDetailsService implements UserDetailsService{
 
 	
-	private final  UserRepository userRepo;
+	private final  UserRepository userRepository;
 		
-	public MyUserDetailsService(UserRepository userRepo) {
-		this.userRepo = userRepo;
-	}
 	
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		
-   if(userRepo.findByEmail(email) == null) throw new UsernameNotFoundException("User not found with email: " + email);
-   
-	User user =  userRepo.findByEmail(email).orElseThrow(() -> new EntityNotFoundException(""));
+	User user =  userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 	
 		return new UserPrincipals(user);
 	}

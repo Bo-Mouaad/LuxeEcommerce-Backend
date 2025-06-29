@@ -1,5 +1,6 @@
 package MainApp.Controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +24,7 @@ public class AddressController {
 		try {
 				return ResponseEntity.ok(addressService.saveAddressHandler(payload, authentication));
 		} catch(Exception e) {
-		  return ResponseEntity.status(500).body(null);
+		  return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
 	

@@ -3,6 +3,7 @@ package MainApp.Controllers;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,17 +32,17 @@ public class CartController {
 			cartService.addToCartHandler(payload, authentication);
 			return ResponseEntity.ok("Yes added");
 		}catch(Exception e) {
-			return ResponseEntity.status(500).body(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 		
 	}
 	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> deleteFromCart(@PathVariable Long id, Authentication authentication){ 
+	public ResponseEntity<String> deleteFromCart(@PathVariable long id, Authentication authentication){ 
 		try { 
 			cartService.deleteFromCartHandler(id, authentication);
 			return ResponseEntity.ok("Yes Deleted");
 		}catch(Exception e) {
-			return ResponseEntity.status(500).body(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
 	@GetMapping("/getCartProducts")
@@ -50,7 +51,7 @@ public class CartController {
 			return ResponseEntity.ok(cartService.getCartProductsHandler(authentication));
 			
 		}catch(Exception e) { 
-			return ResponseEntity.status(500).body(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
 	@PutMapping("/update")
@@ -60,7 +61,7 @@ public class CartController {
 			return ResponseEntity.ok("Yes updated");
 			
 		}catch(Exception e) {
-			return ResponseEntity.status(500).body(null);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
 	}
 

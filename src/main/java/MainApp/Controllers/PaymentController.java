@@ -24,7 +24,7 @@ public class PaymentController {
   @PostMapping("/create-payment-intent")
   public ResponseEntity<Map<String, String>> createPaymentIntent(@RequestBody StripeDto payload) {
       try { 
-          return ResponseEntity.ok(Map.of("clientSecret",paymentService.createPaymentIntentHandler(payload)));
+          return ResponseEntity.ok(Map.of("clientSecret", paymentService.createPaymentIntentHandler(payload)));
       } catch (StripeException e) {
           e.printStackTrace();
           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -34,7 +34,7 @@ public class PaymentController {
    public ResponseEntity<String> savePayment(@RequestBody Map<String, ?> payload){
 	   try { 
 		    paymentService.savePaymentHandler(payload);
-		    return ResponseEntity.ok("yaaay Payment is saved");
+		    return ResponseEntity.ok("payment is saved");
 	   }catch(Exception e) {
 		   return ResponseEntity.status(500).body(null);
 	   }

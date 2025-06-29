@@ -1,7 +1,6 @@
 package MainApp.Controllers;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -36,10 +35,10 @@ public class AuthController {
 	AuthService authService;
 	JWTService jwtService; 
 	
-
+ 
 	
 	@PostMapping("/login")
-	public ResponseEntity<Map<String, String>> login(
+	public ResponseEntity<String> login (
 	    @RequestBody Map<String, String> payload,
 	    HttpServletRequest request,
 	    HttpServletResponse response
@@ -47,18 +46,18 @@ public class AuthController {
 	    User user = new User();
 	    user.setEmail(payload.get("email"));
 	    user.setPassword(payload.get("password"));
-	    user.setUserRole(authService.getUser(user.getEmail()).getUserRole());
+	    user.setUserRole(Role.USER);
 
-	    Map<String, String> data = new HashMap<>();
-
+       // deleting the cookie if it still exists in the browser somehow
 	    try {
 	        Cookie[] cookies = request.getCookies();
 	        if (cookies != null) {
 	            for (Cookie cookie : cookies) {
 	                if ("refreshToken".equals(cookie.getName())) {
 	                    ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
-	                        .path("/")
 	                        .httpOnly(true)
+	                        .sameSite("Strict")
+	                        .path("/")
 	                        .maxAge(0) 
 	                        .build();
 	                    response.addHeader(HttpHeaders.SET_COOKIE, deleteCookie.toString());
@@ -69,28 +68,26 @@ public class AuthController {
 
 	        String accessToken = authService.verifyLogin(user);
 	        String refToken = authService.getRefreshToken(user);
-	        data.put("accessToken", accessToken);
 
-	        if (authService.getUser(payload.get("email")) != null)
-	            data.put("name", authService.getUser(payload.get("email")).getUsername());
 
 	        ResponseCookie newRefreshToken = ResponseCookie.from("refreshToken", refToken)
 	            .httpOnly(true)
+	            .sameSite("Strict")
 	            .path("/")
 	            .maxAge(Duration.ofDays(15))
 	            .build();
 
 	        response.addHeader(HttpHeaders.SET_COOKIE, newRefreshToken.toString());
 
-	        return ResponseEntity.ok(data);
+	        return ResponseEntity.ok(accessToken);
 
 	    } catch (BadCredentialsException e) {
 	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	            .body(Map.of("error", "Invalid email or password"));
+	            .body("Invalid email or password");
 	    } catch (Exception e) {
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-	            .body(Map.of("error", "An unexpected error occurred!"));
+	            .body(("An unexpected error occurred!"));
 	    }
 	}
 
@@ -142,23 +139,18 @@ public class AuthController {
 		        SecurityContextHolder.clearContext();
 			ResponseCookie refreshToken = ResponseCookie.from("refreshToken", "")
 			        .httpOnly(true)
+			        .sameSite("Strict")
 			        .path("/") 
 			        .maxAge(0)
 			        .build();
 			response.addHeader(HttpHeaders.SET_COOKIE, refreshToken.toString());
-		    return ResponseEntity.ok(Map.of("Success","Log out Succeeded!"));
+		    return ResponseEntity.ok(Map.of("success","Log out Succeeded!"));
 		}catch(Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("Failed","Log out Failed !")); 
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error","Log out Failed !")); 
 		}
 		
 	}
-	
-	@GetMapping("/")
-	String test () {
-		return " hello "; 
-	}
-	
 	
 	
 	
